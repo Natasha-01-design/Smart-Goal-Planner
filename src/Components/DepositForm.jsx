@@ -12,7 +12,7 @@ export default function DepositForm({ goals, setGoals }) {
       savedAmount: goal.savedAmount + Number(amount)
     };
 
-    fetch(`http://localhost:3001/goals/${goalId}`, {
+    fetch(`http://localhost:3000/goals/${goalId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ savedAmount: updatedGoal.savedAmount })

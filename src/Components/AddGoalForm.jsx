@@ -17,7 +17,7 @@ export default function AddGoalForm({ setGoals }) {
       createdAt: new Date().toISOString().split("T")[0],
     };
 
-    fetch("http://localhost:3001/goals", {
+    fetch("http://localhost:3000/goals", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newGoal)

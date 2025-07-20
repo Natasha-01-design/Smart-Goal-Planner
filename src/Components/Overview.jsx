@@ -4,7 +4,7 @@ export default function Overview({ goals }) {
   const goalsCompleted = goals.filter(g => g.savedAmount >= g.targetAmount).length;
 
   return (
-    <div>
+    <div className="overview">
       <h2>Overview</h2>
       <p>Total Goals: {totalGoals}</p>
       <p>Total Saved: ${totalSaved}</p>
