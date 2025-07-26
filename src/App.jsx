@@ -53,7 +53,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="title">Smart Goal Planner</h1>
+      <h1 className="title" >Smart Goal Planner</h1>
       <Overview goals={goals} />
       <AddGoalForm addGoal={addGoal} />
       <DepositForm goals={goals} depositToGoal={depositToGoal} />

@@ -1,6 +1,14 @@
 body{
        background: linear-gradient(to bottom right, #6a0dad, #000000);
 }
+.title{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
 form {
   background-color: #f9f9f9;
   padding: 2rem;
