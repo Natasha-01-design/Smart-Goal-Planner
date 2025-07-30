@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 export default function DepositForm({ goals, depositToGoal }) {
@@ -7,7 +6,13 @@ export default function DepositForm({ goals, depositToGoal }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    depositToGoal(goalId, amount);
+
+    if (!goalId || !amount || Number(amount) <= 0) {
+      alert("Please select a goal and enter a valid amount.");
+      return;
+    }
+
+    depositToGoal(goalId, Number(amount));
     setGoalId("");
     setAmount("");
   };
@@ -15,7 +20,11 @@ export default function DepositForm({ goals, depositToGoal }) {
   return (
     <form onSubmit={handleSubmit}>
       <h3>Make a Deposit</h3>
-      <select value={goalId} onChange={(e) => setGoalId(e.target.value)} required>
+      <select
+        value={goalId}
+        onChange={(e) => setGoalId(e.target.value)}
+        required
+      >
         <option value="">Select Goal</option>
         {goals.map((goal) => (
           <option key={goal.id} value={goal.id}>

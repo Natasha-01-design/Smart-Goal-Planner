@@ -13,47 +13,69 @@ function App() {
   useEffect(() => {
     fetch(`${BASE_URL}/goals`)
       .then((res) => res.json())
-      .then(setGoals);
+      .then((data) => {
+        // Convert savedAmount to number for each goal
+        const parsedGoals = data.map(goal => ({
+          ...goal,
+          savedAmount: Number(goal.savedAmount)
+        }));
+        setGoals(parsedGoals);
+      })
+      .catch((err) => console.error("Failed to load goals:", err));
   }, []);
 
   const addGoal = (goal) => {
+    const newGoal = {
+      ...goal,
+      savedAmount: 0,
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+
     fetch(`${BASE_URL}/goals`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(goal),
+      body: JSON.stringify(newGoal),
     })
       .then((res) => res.json())
-      .then((data) => setGoals((prev) => [...prev, data]));
+      .then((data) => setGoals((prev) => [...prev, data]))
+      .catch((err) => console.error("Failed to add goal:", err));
   };
 
   const depositToGoal = (goalId, amount) => {
-    const goal = goals.find((g) => g.id === Number(goalId));
-    if (!goal) return;
+    // Use goalId as string directly
+    const goal = goals.find((g) => g.id === goalId);
+    if (!goal) {
+      console.error("Goal not found for ID:", goalId);
+      return;
+    }
 
-    const updatedGoal = {
-      ...goal,
-      savedAmount: goal.savedAmount + Number(amount),
-    };
+    const updatedAmount = Number(goal.savedAmount) + Number(amount);
 
     fetch(`${BASE_URL}/goals/${goalId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ savedAmount: updatedGoal.savedAmount }),
+      body: JSON.stringify({ savedAmount: updatedAmount }),
     })
       .then((res) => res.json())
-      .then((data) =>
-        setGoals((prev) => prev.map((g) => (g.id === data.id ? data : g)))
-      );
+      .then((updatedGoal) => {
+        // Ensure savedAmount is a number
+        updatedGoal.savedAmount = Number(updatedGoal.savedAmount);
+        setGoals((prevGoals) =>
+          prevGoals.map((g) => (g.id === updatedGoal.id ? updatedGoal : g))
+        );
+      })
+      .catch((err) => console.error("Deposit failed:", err));
   };
 
   const deleteGoal = (goalId) => {
     fetch(`${BASE_URL}/goals/${goalId}`, { method: "DELETE" })
-      .then(() => setGoals((prev) => prev.filter((g) => g.id !== goalId)));
+      .then(() => setGoals((prev) => prev.filter((g) => g.id !== goalId)))
+      .catch((err) => console.error("Delete failed:", err));
   };
 
   return (
     <div className="App">
-      <h1 className="title" >Smart Goal Planner</h1>
+      <h1 className="title">Smart Goal Planner</h1>
       <Overview goals={goals} />
       <AddGoalForm addGoal={addGoal} />
       <DepositForm goals={goals} depositToGoal={depositToGoal} />
